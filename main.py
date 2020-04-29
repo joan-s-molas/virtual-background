@@ -53,20 +53,22 @@ while True:
     success, frame = cap.read()
     mask = get_mask(frame)
     inv_mask = 1-mask
-    # Uncomment this for dank holographic effects
-    #holo = cv2.applyColorMap(frame, cv2.COLORMAP_WINTER)
-    #bandLength, bandGap = 2, 3
-    #for y in range(holo.shape[0]):
-    #    if y % (bandLength+bandGap) < bandLength:
-    #        holo[y,:,:] = holo[y,:,:] * np.random.uniform(0.1, 0.3)
-#
+    ## Uncomment this for dank holographic effects
+    
+    holo = cv2.applyColorMap(frame, cv2.COLORMAP_COOL)
+    bandLength, bandGap = 2, 3
+    for y in range(holo.shape[0]):
+        if y % (bandLength+bandGap) < bandLength:
+            holo[y,:,:] = holo[y,:,:] * np.random.uniform(0.1, 0.3)
+    
     ## the first one is roughly: holo * 0.2 + shifted_holo * 0.8 + 0
-    #holo2 = cv2.addWeighted(holo, 0.2, shift_img(holo.copy(), 5, 5), 0.8, 0)
-    #holo2 = cv2.addWeighted(holo2, 0.4, shift_img(holo2.copy(), -5, -5), 0.6, 0)
-#
-    #holo_done = cv2.addWeighted(frame, 0.5, holo2, 0.6, 0)
-    #
-    #frame = holo_done
+    
+    holo2 = cv2.addWeighted(holo, 0.2, shift_img(holo.copy(), 5, 5), 0.8, 0)
+    holo2 = cv2.addWeighted(holo2, 0.4, shift_img(holo2.copy(), -5, -5), 0.6, 0)
+    holo_done = cv2.addWeighted(frame, 0.5, holo2, 0.6, 0)
+
+    frame = holo_done
+
     for c in range(frame.shape[2]):
         frame[:,:,c] = frame[:,:,c]*mask + replacement_bg[:,:,c]*inv_mask
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
